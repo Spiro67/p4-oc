@@ -1,0 +1,25 @@
+framework:
+    workflows:
+            ticket_life:
+               type: 'workflow'
+               marking_store:
+                   type: 'multiple_state'
+                   arguments:
+                       - 'currentState'
+               supports:
+                   - AppBundle\Entity\Commande
+               places:
+                   - commande
+                   - informations
+                   - recapitulatif
+                   - paiement
+               transitions:
+                   start_phase:
+                       from: commande
+                       to:   informations
+                   infos_phase:
+                       from: informations
+                       to:   recapitulatif
+                   paiement_phase:
+                       from: recapitulatif
+                       to: paiement

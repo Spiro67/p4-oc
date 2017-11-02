@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h2>Madame, Monsieur, </h2>
+
+
+<p>
+    Vous avez récemment effectuer une commande sur la billeterie du Louvre, Le récapitulatif de vos infos ainsi que vos billets d'entrée.
+</p>
+
+<div>
+
+</div>
+
+{% for info in info %}
+    <ul>
+        <li>{{ info.nom }}</li>
+        <li>{{ info.prenom }}</li>
+        <li>{{ info.tarif }}</li>
+        {% if info.tarifReduit %}
+            <li>
+                Vous avez choisi un tarif réduit.
+                Le jour de votre visite vous devrez présenter votre carte étudiant ou équivalent à l'éntrée.
+            </li>
+        {% else %}
+            <li>Pas de tarif réduit</li>
+        {% endif %}
+    </ul>
+{% endfor %}
+
+<p class="help-text">
+    Le musée du Louvre vous remercie de votre confiance et vous souhaite une excellente visite.
+</p>
+</body>
+</html>
