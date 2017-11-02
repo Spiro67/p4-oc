@@ -102,29 +102,27 @@ class DefaultController extends Controller
 
         $commande = ($request->getSession()->get('command'));
         $info = $request->getSession()->get('info');
-
-        if ($commande->getPrixCommande() > 0) {
-
+        dump($commande->getPrixCommande());
             if ($commande !== null && $info !== null) {
-
 
                 $this->get('app.prix')->setTarifBillet($request);
 
-                $token = $this->get('app.stripe')->getApiToken();
+                if ($commande->getPrixCommande() > 0 ) {
 
-                dump($commande);
-                dump($info);
-                dump($token);
+                    $token = $this->get('app.stripe')->getApiToken();
 
-                return $this->render('main/step3.html.twig', array(
-                    'commande' => $commande,
-                    'info' => $info,
-                    'token' => $token,
-                ));
+                    dump($commande);
+                    dump($info);
+                    dump($token);
 
+                    return $this->render('main/step3.html.twig', array(
+                        'commande' => $commande,
+                        'info' => $info,
+                        'token' => $token,
+                    ));
+                }
+                return $this->redirectToRoute("homepage");
             }
-            return $this->redirectToRoute("homepage");
-        }
         return $this->redirectToRoute("homepage");
     }
 
