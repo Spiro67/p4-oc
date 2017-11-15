@@ -1,8 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} > Finalisation{% endblock %}
+{% block stylesheets %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+{% block title %}{{ parent() }} Finalisation{% endblock %}
 
 {% block body %}
+
+    {{ parent() }}
+
     <div class="large-12 columns">
         <h1>Merci encore de votre commande !</h1>
         <p>
@@ -11,4 +20,12 @@
         </p>
         <a href="{{ path('homepage') }}">Retourner à l'accueil</a>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset('js/script.js') }}" type="text/javascript"></script>
+
 {% endblock %}

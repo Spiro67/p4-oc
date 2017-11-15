@@ -33,6 +33,22 @@ class Stripe
         $this->apiToken = $apiToken;
     }
 
+    public function setCard($api, $token, $prixCommande)
+    {
+        \Stripe\Stripe::setApiKey($api);
+
+        try {
+            Charge::create(array(
+                'amount' => $prixCommande * 100,
+                'currency' => 'EUR',
+                'source' => $token,
+                'description' => 'Musée du Louvre - Billeterie',
+            ));
+        } catch (Card $e) {
+            $e->getMessage();
+        }
+    }
+
     /** @return string */
     public function getApiKey()
     {

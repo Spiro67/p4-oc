@@ -6,35 +6,181 @@
 </head>
 <body>
 
-<h2>Madame, Monsieur, </h2>
+<div style="background-color:#fff;width:620px;font-family:Open-sans,sans-serif;color:#575757;font-size:14px;line-height:18px;margin:auto">
+    <td style= "background-color:#f5f5f5" bgcolor="#ececec" width="572" valign="top">
+    <table cellspacing="0" cellpadding="0" style="border:0;border-collapse:collapse">
+        <tbody>
+        <tr>
+            <td class="m_-5855624242854788776space" style="width:20px;padding:7px 0">&nbsp;
+            </td>
+                <td align="center" style="padding:7px 0">
+                    <table cellspacing="0" cellpadding="0" style="border:0;border-collapse:collapse">
+                        <tbody>
+                            <tr>
+                                <table cellspacing="0" cellpadding="0" style="border:0;border-collapse:collapse">
+                                    <tbody>
 
+                                        <tr>
+                                            <td align="center" class="m_-5855624242854788776logo">
+                                                <img src="https://upload.wikimedia.org/wikipedia/fr/9/9f/Musee_du_Louvre_1992_logo.png"  alt="Louvre">
 
-<p>
-    Vous avez récemment effectuer une commande sur la billeterie du Louvre, Le récapitulatif de vos infos ainsi que vos billets d'entrée.
-</p>
+                                                <h2>Madame, Monsieur, </h2>
 
-<div>
+                                                <p>
+                                                    Vous avez récemment effectuer une commande sur la billeterie du Louvre.
+                                                    Vous retrouverez ci-dessous le récapitulatif de votre commande qui fait également foi de billet d'éntrée.
+                                                </p>
 
+                                                <hr>
+
+                                                <tr>
+                                                    <td class="m_8820206774472068481box">
+                                                    <span style="text-align:center">
+                                                        <table align="center" cellspacing="0" cellpadding="0" style="text-align:center">
+                                                            <tbody><tr>
+                                                                <td width="10" style="padding:7px 0">&nbsp;</td>
+                                                                <td style="padding:7px 0">
+                                                                    <br>
+                                                                    <span class="m_8820206774472068481title" style="font-family:Oswald,arial,sans-serif;font-weight:500;font-size:18px;text-transform:uppercase;line-height:33px;color:#2dc1b2;line-height:22px">Détail de la commande</span><br><br>
+                                                                    <span style="color:#575757"><strong>Date de commande :</strong></span> {{ commande.dateCommande |date('d/m/Y H:i:s') }}<br>
+                                                                    <span style="color:#575757"><strong>Date de visite : </strong></span> {{ commande.dateEntree |date('d/m/Y') }}
+                                                                    <br><br>
+                                                                    <img src="https://ci4.googleusercontent.com/proxy/94eXogSwHnv2yx7Uo1AODGnL0sMZe7rL8DZlg1vCvI2p_QKFRUoeEO1pncdgJxKtCcJhMl1qLmH_NNY-Agqs_tf6gBEjoxNT-AMxIDrdDo6HTwFvrGNaq7muqsuCRSmHgd42=s0-d-e1-ft#https://www.lepetitvapoteur.com/themes/vapoteur/img/newsletter/separation.jpg" alt="" style="margin:5px 0" class="CToWUd"><br><br>
+                                                                </td>
+                                                                <td width="10" style="padding:7px 0">&nbsp;</td>
+                                                            </tr>
+                                                        </tbody></table>
+                                                    </span>
+                                                    </td>
+                                                </tr>
+
+                                                <table class="m_-5855624242854788776table m_-5855624242854788776table-recap" bgcolor="#ffffff" style="width:100%;border-collapse:collapse">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="border:1px solid #d6d4d4;background-color:#fbfbfb;font-family:Arial;color:#333;font-size:13px;padding:10px">Nom et prénom</th>
+                                                        <th style="border:1px solid #d6d4d4;background-color:#fbfbfb;font-family:Arial;color:#333;font-size:13px;padding:10px">Type de billet</th>
+                                                        <th style="border:1px solid #d6d4d4;background-color:#fbfbfb;font-family:Arial;color:#333;font-size:13px;padding:10px">Tarif Réduit</th>
+                                                        <th style="border:1px solid #d6d4d4;background-color:#fbfbfb;font-family:Arial;color:#333;font-size:13px;padding:10px">Prix</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="4" style="border:1px solid #d6d4d4;color:#777;padding:7px 0">
+                                                                &nbsp;&nbsp;
+                                                            </td>
+                                                        </tr>
+                                                        {% for info in info %}
+                                                            <tr>
+                                                                <td style="border:1px solid #d6d4d4">
+                                                                    <table class="m_-5855624242854788776table">
+                                                                        <tbody><tr>
+                                                                            <td width="10">&nbsp;</td>
+                                                                            <td>
+                                                                                <font size="2" face="Open-sans, sans-serif" color="#555454">
+                                                                                    <strong>{{ info.nom }} {{ info.prenom }}</strong>
+                                                                                </font>
+                                                                            </td>
+                                                                            <td width="10">&nbsp;</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </td>
+                                                                <td style="border:1px solid #d6d4d4">
+                                                                    <table class="m_-5855624242854788776table">
+                                                                        <tbody><tr>
+                                                                            <td width="10">&nbsp;</td>
+                                                                            <td align="right">
+                                                                                <font size="2" face="Open-sans, sans-serif" color="#555454">
+                                                                                    {{ commande.typeBillet }}
+                                                                                </font>
+                                                                            </td>
+                                                                            <td width="10">&nbsp;</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </td>
+                                                                <td style="border:1px solid #d6d4d4">
+                                                                    <table class="m_-5855624242854788776table">
+                                                                        <tbody><tr>
+                                                                            <td width="10">&nbsp;</td>
+                                                                            <td align="right">
+                                                                                <font size="2" face="Open-sans, sans-serif" color="#555454">
+                                                                                    {% if info.tarifReduit %}
+                                                                                        Oui*
+                                                                                    {% else %}
+                                                                                        Non
+                                                                                    {% endif %}
+                                                                                </font>
+                                                                            </td>
+                                                                            <td width="10">&nbsp;</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </td>
+                                                                <td style="border:1px solid #d6d4d4">
+                                                                    <table class="m_-5855624242854788776table">
+                                                                        <tbody><tr>
+                                                                            <td width="10">&nbsp;</td>
+                                                                            <td align="right">
+                                                                                <font size="2" face="Open-sans, sans-serif" color="#555454">
+                                                                                    {{ info.tarif }} €
+                                                                                </font>
+                                                                            </td>
+                                                                            <td width="10">&nbsp;</td>
+                                                                        </tr>
+                                                                        </tbody></table>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        <tr>
+                                                            <td colspan="4" style="border:1px solid #d6d4d4;color:#777;padding:7px 0">
+                                                                &nbsp;&nbsp;</td></tr>
+
+                                                        <tr class="m_-5855624242854788776conf_body">
+                                                            <td bgcolor="#f8f8f8" colspan="3" style="border:1px solid #d6d4d4;color:#333;padding:7px 0">
+                                                                <table class="m_-5855624242854788776table" style="width:100%;border-collapse:collapse">
+                                                                    <tbody><tr>
+                                                                        <td width="10" style="color:#333;padding:0">&nbsp;</td>
+                                                                        <td align="right" style="color:#333;padding:0">
+                                                                            <font size="2" face="Open-sans, sans-serif" color="#555454">
+                                                                                <strong>Total payé</strong>
+                                                                            </font>
+                                                                        </td>
+                                                                        <td width="10" style="color:#333;padding:0">&nbsp;</td>
+                                                                    </tr>
+                                                                    </tbody></table>
+                                                            </td>
+                                                            <td bgcolor="#f8f8f8" colspan="4" style="border:1px solid #d6d4d4;color:#333;padding:7px 0">
+                                                                <table class="m_-5855624242854788776table" style="width:100%;border-collapse:collapse">
+                                                                    <tbody><tr>
+                                                                        <td width="10" style="color:#333;padding:0">&nbsp;</td>
+                                                                        <td align="right" style="color:#333;padding:0">
+                                                                            <font size="4" face="Open-sans, sans-serif" color="#555454">
+                                                                                {{ commande.prixcommande}} €
+                                                                            </font>
+                                                                        </td>
+                                                                        <td width="10" style="color:#333;padding:0">&nbsp;</td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <p> *Si vous avez choisi un tarif reduit, vous devrez présenter votre carte étudiant ou équivalent à l'éntrée.</p>
+                                                <p class="help-text">
+                                                    Le musée du Louvre vous remercie de votre confiance et vous souhaite une excellente visite.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </td>
 </div>
 
-{% for info in info %}
-    <ul>
-        <li>{{ info.nom }}</li>
-        <li>{{ info.prenom }}</li>
-        <li>{{ info.tarif }}</li>
-        {% if info.tarifReduit %}
-            <li>
-                Vous avez choisi un tarif réduit.
-                Le jour de votre visite vous devrez présenter votre carte étudiant ou équivalent à l'éntrée.
-            </li>
-        {% else %}
-            <li>Pas de tarif réduit</li>
-        {% endif %}
-    </ul>
-{% endfor %}
-
-<p class="help-text">
-    Le musée du Louvre vous remercie de votre confiance et vous souhaite une excellente visite.
-</p>
 </body>
 </html>

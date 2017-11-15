@@ -20,10 +20,3 @@ $(function () {
         $(this).after('<p class="help-text">Format demandé : 25-12-1985</p>');
     })
 });
-
-$(function () {
-    $("#tabs").tabs();
-    $(".nexttab").click(function() {
-        $("#tabs").tabs("option", "active", this.hash);
-    });
-});

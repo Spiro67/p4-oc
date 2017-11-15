@@ -2,31 +2,26 @@
 
 namespace AppBundle\Form\Type;
 
-use AppBundle\Entity\Commande;
 use AppBundle\Validator\JourFerier;
 use AppBundle\Validator\JourFermeture;
 use AppBundle\Validator\DemiJournee;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContext;
 
 // Types
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 // Validators
 use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Type;
 
 
 class CommandeType extends AbstractType
@@ -39,8 +34,8 @@ class CommandeType extends AbstractType
                     new NotBlank(),
                     new JourFerier(),
                     new JourFermeture(),
-                    new DateTime([]),
-                    new GreaterThanOrEqual("today")
+                    new Date([]),
+                    new GreaterThanOrEqual("today"),
                 ],
                 'widget' => 'single_text',
                 'html5' => false,
@@ -54,12 +49,7 @@ class CommandeType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank(),
-                ],
-                'choice_attr' => [
 
-                    1 => ['data-test' => 'Journée complète']
-
-                    // set disabled to true based on the value, key or index of the choice...
                 ],
             ])
 			->add('quantite', IntegerType::class, [
@@ -83,7 +73,29 @@ class CommandeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Commande'
+            'data_class' => 'AppBundle\Entity\Commande',
+            'constraints' => [
+                new Assert\Callback([ 'callback' => function($data, ExecutionContext $context) {
+
+                    $heureActuelle = date('H:i:s');
+
+                    $dateJour = date_format(new \Datetime(), 'd/m/Y');
+
+                    $dateSelectionne = date_format($data->getDateEntree(), 'd/m/Y');
+
+                    $typeBillet = $data->getTypeBillet();
+
+                    if($dateSelectionne === $dateJour && $typeBillet === "Journée complète") {
+                        if($heureActuelle >= "14:00:00" && $heureActuelle <= "23:59:59") {
+                            $context
+                                ->buildViolation('Vous ne pouvez pas commander de billet journée une fois 14h00 passées.')
+                                ->atPath('typeBillet')
+                                ->addViolation()
+                            ;
+                        }
+                    }
+                }])
+            ]
         ));
     }
 

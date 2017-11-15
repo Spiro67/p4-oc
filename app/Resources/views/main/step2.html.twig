@@ -15,22 +15,29 @@
     <h2 class="text-center">{{ block('title') }}</h2>
 
     <div class="container">
-
-        <div id="step-2" class="">
+        <div id="step-1" class="">
+            {% for flashMessage in app.session.flashbag.get('problem-age') %}
+                <div class="alert alert-danger">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
             <div class="well">
                 {{ form_start(infoForm) }}
-                    {% for infos in infoForm %}
-                        <div class="form-group">
-                            <div class="col-sm-10">
-                                {{ form_widget(infos) }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                <input type ="submit" value="Etape 2"/>
+                {% for infos in infoForm %}
+                <div class="form-group">
+                    <div class="col-sm-10">
+                      {{ form_widget(infos) }}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <input class="btn btn-primary" id = "next" type ="submit" value="Suivant"/></input>
+
                 {{ form_end(infoForm) }}
             </div>
         </div>
     </div>
+
 
 {% endblock %}
 

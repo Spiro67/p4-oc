@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Commande.
+ * achat.
  *
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CommandeRepository")
  * @ORM\Table("_commande")

@@ -11,6 +11,23 @@ services:
             - '%api.token%'
             - '%api.publishing_key%'
 
+    app.mail:
+        class: AppBundle\Service\EnvoieMail
+        arguments:
+            - '@mailer'
+            - '@templating'
+
+    app.achat:
+        class: AppBundle\Service\Achat
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@session'
+            - '@form.factory'
+            - '@app.stripe'
+            - '@app.mail'
+            - '@templating'
+            - '@mailer'
+
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     AppBundle\:

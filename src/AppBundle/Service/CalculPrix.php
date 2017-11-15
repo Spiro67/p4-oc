@@ -8,33 +8,20 @@
 
 namespace AppBundle\Service;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMInvalidArgumentException;
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\Workflow\Exception\LogicException;
+
 
 // Entity
-use AppBundle\Entity\Commande;
 use AppBundle\Entity\Ticket;
 
 class CalculPrix
 {
-    /**
-     * @var int
-     */
+
     private $prixBillet;
 
-    /** @var Session */
     protected $session;
-
-
 
     public function __construct(Session $session) {
 
@@ -49,43 +36,55 @@ class CalculPrix
      * @return int
      */
 
-    public function setTarifCommande(Request $request)
-    {
-
-    }
-
     public function setTarifBillet(Request $request)
     {
         $commande = ($request->getSession()->get('command'));
         $info = $request->getSession()->get('info');
-        $quantite = $commande->getQuantite();
-        $prixCommande = 0;
+        if ($commande !== null && $info !== null) {
+            $quantite = $commande->getQuantite();
+            $prixCommande = 0;
+            $isMajeur = false;
 
-        for ($i = 0; $i < $quantite; $i++) {
+            for ($i = 0; $i < $quantite; $i++) {
 
-            $test = $info[$i]->getDateNaissance();
-            $date2=$commande->getDateEntree();
-            $diff=date_diff($test,$date2);
-            $tarifReduit = $info[$i]->getTarifReduit();
+                $dateNaissance = $info[$i]->getDateNaissance();
+                $dateEntree = $commande->getDateEntree();
+                $diff = date_diff($dateNaissance, $dateEntree);
 
-            if ($tarifReduit !== true) {
+                if ($diff->format('%y years') >= 18) {
 
-                $this->prixBillet = $this->setAge($diff->format('%y years'), "");
+                    $isMajeur = true;
 
-            } else {
-
-                $this->prixBillet = "10";
+                }
             }
 
-            $prixCommande = $prixCommande + $this->prixBillet;
-            $commande->setPrixCommande($prixCommande);
-            $info[$i]->setTarif($this->prixBillet);
-            $info[$i]->setCommande($commande);
-        }
+            if ($isMajeur == true) {
 
-        return $commande;
+                for ($i = 0; $i < $quantite; $i++) {
+
+                    $dateNaissance = $info[$i]->getDateNaissance();
+                    $dateEntree = $commande->getDateEntree();
+                    $diff = date_diff($dateNaissance, $dateEntree);
+                    $tarifReduit = $info[$i]->getTarifReduit();
+                    dump($diff->format('%y years'));
+
+                    $this->prixBillet = $this->setAge($diff->format('%y years'), "");
+
+                    if ($tarifReduit == true && $this->prixBillet > 10) {
+
+                        $this->prixBillet = "10";
+                    }
+
+                    $prixCommande = $prixCommande + $this->prixBillet;
+                    $commande->setPrixCommande($prixCommande);
+                    $info[$i]->setTarif($this->prixBillet);
+                    $info[$i]->setCommande($commande);
+                }
+                return $commande;
+            }
+        }
     }
-    public function setAge($age, $tarifReduit)
+    public function setAge($age)
     {
         switch ($age) {
             case $age <= 4:
@@ -96,9 +95,6 @@ class CalculPrix
                 break;
             case $age >= 60:
                 $this->prixBillet = 12;
-                break;
-            case $tarifReduit :
-                $this->prixBillet = 10;
                 break;
             default:
                 $this->prixBillet = 16;
