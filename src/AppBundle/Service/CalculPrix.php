@@ -58,7 +58,7 @@ class CalculPrix
                 }
             }
 
-            if ($isMajeur == true) {
+            if ($isMajeur === true) {
 
                 for ($i = 0; $i < $quantite; $i++) {
 
@@ -70,7 +70,7 @@ class CalculPrix
 
                     $this->prixBillet = $this->setAge($diff->format('%y years'), "");
 
-                    if ($tarifReduit == true && $this->prixBillet > 10) {
+                    if ($tarifReduit === true && $this->prixBillet > 10) {
 
                         $this->prixBillet = "10";
                     }
