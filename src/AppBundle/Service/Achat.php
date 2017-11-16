@@ -10,21 +10,14 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Commande;
 use AppBundle\Entity\Info;
-use AppBundle\Service\CalculPrix;
-use AppBundle\Service\Stripe;
 use AppBundle\Form\Type\CommandeType;
 use AppBundle\Form\Type\InfoType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormView;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMInvalidArgumentException;
 
 class Achat
 {
