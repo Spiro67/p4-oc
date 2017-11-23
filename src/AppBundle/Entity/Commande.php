@@ -78,6 +78,14 @@ class Commande {
      */
     private $infos;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="numero_commande", type="string", nullable=true)
+     *
+     */
+    private $numeroCommande;
+
 
     public function __construct(){
 
@@ -241,6 +249,30 @@ class Commande {
     public function getPrixCommande()
     {
         return $this->prixCommande;
+    }
+
+    /**
+     * Set numeroCommande
+     *
+     * @param string $prixCommande
+     *
+     * @return Commande
+     */
+    public function setNumeroCommande($numeroCommande)
+    {
+        $this->numeroCommande = $numeroCommande;
+
+        return $this;
+    }
+
+    /**
+     * Get numeroCommande
+     *
+     * @return string
+     */
+    public function getNumeroCommande()
+    {
+        return $this->numeroCommande;
     }
 
     /**

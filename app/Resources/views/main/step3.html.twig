@@ -14,11 +14,11 @@
 
     <h2 class="text-center">{{ block('title') }}</h2>
 
-<div class="container">
-    <div id="step-3" class="">
+<div class="container-fluid">
+    <div id="commande" class="">
         <div class="well">
             <div class="tab-content">
-                <div class="table-responsive">
+                <div class="table-striped">
                     <table class="table table-hover table-condensed">
                         <thead class = entete>
                             <tr>
@@ -31,7 +31,7 @@
                             <tr>
                                 <td>Total</td>
                                 <td></td>
-                                <td> {{ commande.prixCommande }} </td>
+                                <td> {{ commande.prixCommande }} € </td>
                             </tr>
                         </tfoot>
                 {% for info in info %}
@@ -39,7 +39,7 @@
                         <tr>
                             <td> {{ info.nom }} {{ info.prenom }} </td>
                             <td> {{ commande.typeBillet }}
-                            <td> {{ info.tarif }} </td>
+                            <td> {{ info.tarif }} € </td>
                         </tr>
                     </tbody>
                 {% endfor %}
@@ -48,13 +48,15 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div id = "stripe" class="form-group">
         <form action="" method="POST">
             <script
-                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    src="https://checkout.stripe.com/checkout.js"
+                    class="stripe-button"
+                    data-label="Paiement"
                     data-key=  {{ token }}
                     data-amount="{{ commande.prixCommande * 100}}"
-                    data-email= "{{ commande.email }}"
+                    data-email="{{ commande.email }}"
                     data-name="Paiement"
                     data-description="Billeterie du louvre"
                     data-locale="auto"

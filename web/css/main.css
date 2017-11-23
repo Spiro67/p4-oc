@@ -2,14 +2,11 @@ body {
     align-content: center;
 }
 
-#step-1 {
-    width: 70%;
-    margin: auto;
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: white;
 }
 
-#step-2 {
-    width: 70%;
-    margin: auto;
+#stripe {
     text-align: center;
 }
 
@@ -19,4 +16,35 @@ body {
 
 .well {
     height: auto;
+}
+.main-title {
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+
+    #commande {
+        width: 100%;
+        margin: auto;
+    }
+
+    #final {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    #commande {
+        width: 70%;
+        margin: auto;
+    }
+
+    #final {
+        width: 70%;
+        margin: auto;
+        text-align: center;
+    }
 }

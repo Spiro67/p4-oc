@@ -46,63 +46,6 @@ class Achat
         $this->mail = $mail;
     }
 
-    public function step1(Request $request) {
-
-        $commande = new Commande();
-
-        $commandeForm = $form = $this->form->create(CommandeType::class,$commande);
-        $commandeForm->handleRequest($request);
-
-        if ($commandeForm->isSubmitted() && $commandeForm->isValid()) {
-            $data = $commandeForm->getData();
-            $request->getSession()->set('command', $data);
-            $dateEntree = ($request->getSession()->get('command')->getDateEntree());
-            dump(($this->getNbrBilletJour($dateEntree)));
-
-            if ($this->getNbrBilletJour($dateEntree) + count($commande->getQuantite()) > 1000) {
-
-                $response = new RedirectResponse('/');
-                $response->send();
-
-            }
-            $response = new RedirectResponse('step-2');
-            $response->send();
-        }
-        return $form->createView();
-    }
-
-    public function step2(Request $request){
-
-        $commande = $request->getSession()->get('command');
-        dump($commande);
-        if ($commande !== null) {
-            $quantite = $request->getSession()->get('command')->getQuantite();
-
-            for ($i = 1 ; $i <= $quantite ; $i++) {
-                $infos[] = new info();
-            }
-
-            $infoForm = $form = $this->form->create(CollectionType::class, $infos, ['entry_type'=>InfoType::class]);
-            $infoForm->handleRequest($request);
-
-            if ($infoForm->isSubmitted() && $infoForm->isValid()) {
-
-                for ($i = 0 ; $i < $quantite ; $i ++) {
-
-                    $infos[$i];
-                }
-
-                $request->getSession()->set('info', $infos);
-
-                $response = new RedirectResponse('step-3');
-                $response->send();
-            }
-            return $form->createView();
-        }
-        $response = new RedirectResponse('/');
-        $response->send();
-    }
-
     public function step3(Request $request)
     {
 
@@ -125,12 +68,14 @@ class Achat
                         );
 
                         $quantite = $commande->getQuantite();
+                        $commande->setNumeroCommande(uniqid('LV',false ));
                         $this->doctrine->persist($commande);
 
                         for ($i = 0; $i < $quantite; $i++) {
 
                             $this->doctrine->persist($info[$i]);
                         }
+
                         $this->doctrine->flush();
                         $this->mail->sendMail($request);
                         $response = new RedirectResponse('step-4');

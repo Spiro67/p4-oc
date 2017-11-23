@@ -46,7 +46,7 @@ class InfoType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'format' => 'dd-MM-yyyy',
-                'attr' => ['class' => 'datepicker-js'],
+                'attr' => ['class' => 'datepicker-js', 'readonly' => true],
             ])
             ->add('pays', CountryType::class, [
                 'required' => true,

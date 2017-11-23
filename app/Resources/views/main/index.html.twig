@@ -10,8 +10,13 @@
 
     {{ parent() }}
 
-    <div class="container">
-        <div id="step-1" class="">
+    <div class="container-fluid">
+        <div id="commande" class="">
+            {% for flashMessage in app.session.flashbag.get('nbr-billet') %}
+                <div class="alert alert-danger">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
             <div class="well">
                 {{ form_start(commandeForm) }}
                 <div class="form-group">

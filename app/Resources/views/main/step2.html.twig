@@ -14,8 +14,8 @@
 
     <h2 class="text-center">{{ block('title') }}</h2>
 
-    <div class="container">
-        <div id="step-1" class="">
+    <div class="container-fluid">
+        <div id="commande" class="">
             {% for flashMessage in app.session.flashbag.get('problem-age') %}
                 <div class="alert alert-danger">
                     {{ flashMessage }}
@@ -23,15 +23,20 @@
             {% endfor %}
             <div class="well">
                 {{ form_start(infoForm) }}
-                {% for infos in infoForm %}
+
                 <div class="form-group">
-                    <div class="col-sm-10">
+                    {% for infos in infoForm %}
+                    <div class="col-sm-12">
                       {{ form_widget(infos) }}
                     </div>
+                    {% endfor %}
+                    <div>Attention ! Si vous avez choisi un tarif reduit, vous devrez présenter votre carte étudiant ou équivalent à l'éntrée.</div>
                 </div>
-                {% endfor %}
-
                 <input class="btn btn-primary" id = "next" type ="submit" value="Suivant"/></input>
+
+
+
+
 
                 {{ form_end(infoForm) }}
             </div>

@@ -2,10 +2,20 @@
 
 namespace AppBundle\Controller;
 
-
+use AppBundle\Entity\Commande;
+use AppBundle\Entity\Info;
+use AppBundle\Service\CalculPrix;
+use AppBundle\Service\Stripe;
+use AppBundle\Form\Type\CommandeType;
+use AppBundle\Form\Type\InfoType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\Workflow\Exception\LogicException;
 
 class DefaultController extends Controller
 {
@@ -16,11 +26,26 @@ class DefaultController extends Controller
 
     public function indexAction(Request $request)
     {
-        $commandeForm = $this->get('app.achat')->step1($request);
+        $commande = new Commande();
 
+        $commandeForm = $this->createForm(CommandeType::class,$commande);
+        $commandeForm->handleRequest($request);
+
+        if ($commandeForm->isSubmitted() && $commandeForm->isValid()) {
+            $data = $commandeForm->getData();
+            $request->getSession()->set('command', $data);
+            $dateEntree = ($request->getSession()->get('command')->getDateEntree());
+
+            if ($this->getNbrBilletJour($dateEntree) + $commande->getQuantite() > 1000) {
+
+                $this->addFlash("nbr-billet", "Déjà plus de 1000 billets vendu pour cette date ! Merci de selectionner une autre date d'entrée");
+                return $this->redirectToRoute('homepage');
+            }
+            return $this->redirectToRoute('step2');
+        }
         return $this->render('main/index.html.twig', array (
-            'commandeForm' => $commandeForm,
-    ));
+            'commandeForm' => $commandeForm->createView(),
+        ));
     }
 
     /**
@@ -28,11 +53,33 @@ class DefaultController extends Controller
      */
     public function step2Action(Request $request)
     {
-        $infoForm = $this->get('app.achat')->step2($request);
+        $commande = $request->getSession()->get('command');
+        if ($commande !== null) {
+            $quantite = $request->getSession()->get('command')->getQuantite();
 
-        return $this->render('main/step2.html.twig', array (
-            'infoForm' => $infoForm,
-        ));
+            for ($i = 1 ; $i <= $quantite ; $i++) {
+                $infos[] = new info();
+            }
+
+            $infoForm = $this->createForm(CollectionType::class, $infos, ['entry_type'=>InfoType::class]);
+            $infoForm->handleRequest($request);
+
+            if ($infoForm->isSubmitted() && $infoForm->isValid()) {
+
+                for ($i = 0 ; $i < $quantite ; $i ++) {
+
+                    $infos[$i];
+                }
+
+                $request->getSession()->set('info', $infos);
+
+                return $this->redirectToRoute("step3");
+            }
+            return $this->render('main/step2.html.twig', array (
+                'infoForm' => $infoForm->createView(),
+                ));
+        }
+        return $this->redirectToRoute("homepage");
     }
 
     /**
@@ -66,10 +113,18 @@ class DefaultController extends Controller
 
         if ($commande !== null && $info !== null) {
 
-            $request->getSession()->clear();
+            //$request->getSession()->clear();
             return $this->render('main/step4.html.twig');
         }
 
         return $this->redirectToRoute("homepage");
     }
+
+    public function getNbrBilletJour($dateEntree)
+    {
+        return count(
+            $this->getdoctrine()->getRepository(Info::class)->getBilletJour($dateEntree)
+        );
+    }
+
 }

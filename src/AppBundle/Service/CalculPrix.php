@@ -66,7 +66,6 @@ class CalculPrix
                     $dateEntree = $commande->getDateEntree();
                     $diff = date_diff($dateNaissance, $dateEntree);
                     $tarifReduit = $info[$i]->getTarifReduit();
-                    dump($diff->format('%y years'));
 
                     $this->prixBillet = $this->setAge($diff->format('%y years'), "");
 

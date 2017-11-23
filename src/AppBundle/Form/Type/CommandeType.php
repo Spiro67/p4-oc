@@ -40,7 +40,7 @@ class CommandeType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'format' => 'dd-MM-yyyy',
-                'attr' => ['class' => 'js-datepicker'],
+                'attr' => ['class' => 'js-datepicker', 'readonly' => true],
             ])
             ->add('typeBillet', ChoiceType::class, [
                 'choices' => [

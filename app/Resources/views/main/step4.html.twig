@@ -12,14 +12,17 @@
 
     {{ parent() }}
 
-    <div class="large-12 columns">
-        <h1>Merci encore de votre commande !</h1>
-        <p>
-            Le musée du louvre vous remercie de votre commande et vous souhaite une très bonne visite,
-            vos billets vous seront envoyés par mail !
-        </p>
-        <a href="{{ path('homepage') }}">Retourner à l'accueil</a>
-    </div>
+        <div class="container">
+            <div id="final" class="">
+
+                <h1>Merci encore de votre commande !</h1>
+                <p>
+                    Le musée du louvre vous remercie de votre commande et vous souhaite une très bonne visite,
+                    vos billets vous seront envoyés par mail !
+                </p>
+                <a href="{{ path('homepage') }}">Retourner à l'accueil</a>
+            </div>
+        </div>
 {% endblock %}
 
 {% block javascripts %}

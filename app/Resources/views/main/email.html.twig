@@ -41,7 +41,8 @@
                                                                 <td width="10" style="padding:7px 0">&nbsp;</td>
                                                                 <td style="padding:7px 0">
                                                                     <br>
-                                                                    <span class="m_8820206774472068481title" style="font-family:Oswald,arial,sans-serif;font-weight:500;font-size:18px;text-transform:uppercase;line-height:33px;color:#2dc1b2;line-height:22px">Détail de la commande</span><br><br>
+                                                                    <span class="m_8820206774472068481title" style="font-family:Oswald,arial,sans-serif;font-weight:500;font-size:18px;text-transform:uppercase;line-height:33px;color:#ef9e21;line-height:22px">Détail de la commande</span><br><br>
+                                                                    <span style="color:#575757"><strong>Numéro de commande :</strong></span> {{ commande.numeroCommande }}<br>
                                                                     <span style="color:#575757"><strong>Date de commande :</strong></span> {{ commande.dateCommande |date('d/m/Y H:i:s') }}<br>
                                                                     <span style="color:#575757"><strong>Date de visite : </strong></span> {{ commande.dateEntree |date('d/m/Y') }}
                                                                     <br><br>
@@ -103,7 +104,7 @@
                                                                             <td width="10">&nbsp;</td>
                                                                             <td align="right">
                                                                                 <font size="2" face="Open-sans, sans-serif" color="#555454">
-                                                                                    {% if info.tarifReduit %}
+                                                                                    {% if info.tarif == 10 %}
                                                                                         Oui*
                                                                                     {% else %}
                                                                                         Non
