@@ -24,7 +24,6 @@ class EnvoieMail
         $this->templating = $templating;
     }
 
-
     public function sendMail (Request $request)
 
     {
@@ -44,4 +43,5 @@ class EnvoieMail
 
         $this->mailer->send($mail);
     }
+
 }

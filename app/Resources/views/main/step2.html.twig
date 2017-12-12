@@ -12,10 +12,9 @@
 
     {{ parent() }}
 
-    <h2 class="text-center">{{ block('title') }}</h2>
-
     <div class="container-fluid">
         <div id="commande" class="">
+            <h3>{{ block('title') }}</h3>
             {% for flashMessage in app.session.flashbag.get('problem-age') %}
                 <div class="alert alert-danger">
                     {{ flashMessage }}
@@ -30,13 +29,9 @@
                       {{ form_widget(infos) }}
                     </div>
                     {% endfor %}
-                    <div>Attention ! Si vous avez choisi un tarif reduit, vous devrez présenter votre carte étudiant ou équivalent à l'éntrée.</div>
+                    <div>*Attention ! Si vous avez choisi un tarif réduit, vous devrez présenter votre carte étudiant ou équivalent à l'entrée.</div>
                 </div>
                 <input class="btn btn-primary" id = "next" type ="submit" value="Suivant"/></input>
-
-
-
-
 
                 {{ form_end(infoForm) }}
             </div>

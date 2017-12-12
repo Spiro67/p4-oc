@@ -15,14 +15,16 @@ class JourFermetureValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        $jourFermeture = ['Tue', 'Sun'];
+        if ($value !== null) {
+            $jourFermeture = ['Tue', 'Sun'];
 
-        $jour = date('D', $value->getTimeStamp());
+            $jour = date('D', $value->getTimeStamp());
 
-        foreach ($jourFermeture as $fermeture) {
-            if ($jour === $fermeture) {
-                $this->context->buildViolation($constraint->message)
-                    ->addViolation();
+            foreach ($jourFermeture as $fermeture) {
+                if ($jour === $fermeture) {
+                    $this->context->buildViolation($constraint->message)
+                        ->addViolation();
+                }
             }
         }
     }

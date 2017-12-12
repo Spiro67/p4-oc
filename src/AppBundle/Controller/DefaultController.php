@@ -4,18 +4,14 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Commande;
 use AppBundle\Entity\Info;
-use AppBundle\Service\CalculPrix;
-use AppBundle\Service\Stripe;
+use AppBundle\Form\Type\RenvoieCommandeType;
 use AppBundle\Form\Type\CommandeType;
 use AppBundle\Form\Type\InfoType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\Workflow\Exception\LogicException;
 
 class DefaultController extends Controller
 {
@@ -31,10 +27,12 @@ class DefaultController extends Controller
         $commandeForm = $this->createForm(CommandeType::class,$commande);
         $commandeForm->handleRequest($request);
 
+
         if ($commandeForm->isSubmitted() && $commandeForm->isValid()) {
             $data = $commandeForm->getData();
             $request->getSession()->set('command', $data);
             $dateEntree = ($request->getSession()->get('command')->getDateEntree());
+
 
             if ($this->getNbrBilletJour($dateEntree) + $commande->getQuantite() > 1000) {
 
@@ -89,17 +87,32 @@ class DefaultController extends Controller
 
     public function step3Action(Request $request)
     {
-        $this->get('app.prix')->setTarifBillet($request);
-        $requete = $this->get('app.achat')->step3($request);
-        $commande = $requete[0];
-        $info =  $requete[1];
-        $token = $this->get('app.stripe')->getApiToken();
+        $commande = ($request->getSession()->get('command'));
+        $info = $request->getSession()->get('info');
 
-                    return $this->render('main/step3.html.twig', array(
-                        'commande' => $commande,
-                        'info' => $info,
-                        'token' => $token,
-                    ));
+        if ($commande !== null && $info !== null) {
+
+            $this->get('app.prix')->setTarifBillet($request);
+
+
+            if ($commande->getPrixCommande() !== null && $info[0]->getTarif() !== null)  {
+
+                $requete = $this->get('app.stripe')->paiement($request);
+
+                $commande = $requete[0];
+                $info =  $requete[1];
+                $token = $this->get('app.stripe')->getApiToken();
+
+                return $this->render('main/step3.html.twig', array(
+                    'commande' => $commande,
+                    'info' => $info,
+                    'token' => $token,
+                ));
+            }
+            $this->addFlash("problem-age", "Attention il faut au moins une personne majeur");
+            return $this->redirectToRoute("step2");
+        }
+        return $this->redirectToRoute("homepage");
     }
 
     /**
@@ -113,7 +126,7 @@ class DefaultController extends Controller
 
         if ($commande !== null && $info !== null) {
 
-            //$request->getSession()->clear();
+            $request->getSession()->clear();
             return $this->render('main/step4.html.twig');
         }
 
@@ -127,4 +140,46 @@ class DefaultController extends Controller
         );
     }
 
+    /**
+     * @Route("/renvoie", name="renvoie")
+     */
+
+    public function renvoieCommandeAction (request $request) {
+
+        $renvoieCommandeForm = $this->createForm(RenvoieCommandeType::class);
+        $renvoieCommandeForm->handleRequest($request);
+        $infos[] = new info();
+
+        if ($renvoieCommandeForm->isSubmitted() && $renvoieCommandeForm->isValid()) {
+
+            $data = $renvoieCommandeForm->getData();
+
+            $commande = $this->getdoctrine()->getRepository('AppBundle:Commande')
+                ->findBy([
+                    'dateEntree' => $data['dateEntree'],
+                    'email' => $data['email']
+                ]);
+
+            if ($commande) {
+
+                $infos = $this->getdoctrine()->getRepository('AppBundle:Info')
+                    ->findBy([
+                        'commande' => $commande->getId()
+                    ]);
+                $request->getSession()->set('command', $commande);
+                $request->getSession()->set('info', $infos);
+                $this->addFlash("success", "Votre commande à bien été retrouvée un email récapitulatif vient de vous être envoyé sur l'adresse renseignée");
+                $this->get('app.mail')->sendMail($request);
+                $request->getSession()->clear();
+                return $this->redirectToRoute("homepage");
+            }
+            else {
+                $this->addFlash("danger", "Il n'y a pas de commande correspondante à vos criètes");
+                return $this->redirectToRoute("homepage");
+            }
+        }
+        return $this->render('main/renvoie.html.twig', array (
+            'renvoieCommandeForm' => $renvoieCommandeForm->createView(),
+        ));
+    }
 }

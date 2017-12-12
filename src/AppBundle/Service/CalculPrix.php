@@ -57,7 +57,6 @@ class CalculPrix
 
                 }
             }
-
             if ($isMajeur === true) {
 
                 for ($i = 0; $i < $quantite; $i++) {

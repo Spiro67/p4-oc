@@ -4,7 +4,6 @@ namespace AppBundle\Form\Type;
 
 use AppBundle\Validator\JourFerier;
 use AppBundle\Validator\JourFermeture;
-use AppBundle\Validator\DemiJournee;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +17,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 // Validators
-use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -31,16 +29,20 @@ class CommandeType extends AbstractType
 		$builder
             ->add('dateEntree', DateType::class, [
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(array(
+                        'message' => 'Merci de renseigner une date de visite valide ',
+                    )),
                     new JourFerier(),
                     new JourFermeture(),
-                    new Date([]),
-                    new GreaterThanOrEqual("today"),
+                    new GreaterThanOrEqual(array('value' => 'today',
+                        'message' => 'Merci de renseigner une date supérieur à la date du jour',
+                    )),
                 ],
                 'widget' => 'single_text',
                 'html5' => false,
                 'format' => 'dd-MM-yyyy',
                 'attr' => ['class' => 'js-datepicker', 'readonly' => true],
+                'label' => 'Date de visite',
             ])
             ->add('typeBillet', ChoiceType::class, [
                 'choices' => [
@@ -48,21 +50,28 @@ class CommandeType extends AbstractType
                     'Demi-journée' => 'Demi-journèe',
                 ],
                 'constraints' => [
-                    new NotBlank(),
-
+                    new NotBlank(array(
+                        'message' => 'Merci de choisir un type de billet valide',
+                    )),
                 ],
+                'label' => 'Type de billet',
             ])
 			->add('quantite', IntegerType::class, [
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(array(
+                        'message' => 'Merci de renseiger une quantité au moins égale à 1',
+                    )),
                     new Range ([
                         'min' => 1,
                     ]),
                 ],
+                'label' => 'Quantité',
             ])
             ->add('email', EmailType::class, [
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(array(
+                        'message' => 'Merci de renseigner une adresse mail valide',
+                    )),
                 ],
             ]);
 	}
@@ -77,21 +86,23 @@ class CommandeType extends AbstractType
             'constraints' => [
                 new Assert\Callback([ 'callback' => function($data, ExecutionContext $context) {
 
-                    $heureActuelle = date('H:i:s');
+                    if($data->getDateEntree() !== null) {
 
-                    $dateJour = date_format(new \Datetime(), 'd/m/Y');
+                        $heureActuelle = date('H:i:s');
 
-                    $dateSelectionne = date_format($data->getDateEntree(), 'd/m/Y');
+                        $dateJour = date_format(new \Datetime(), 'd/m/Y');
 
-                    $typeBillet = $data->getTypeBillet();
+                        $dateSelectionne = date_format($data->getDateEntree(), 'd/m/Y');
 
-                    if($dateSelectionne === $dateJour && $typeBillet === "Journée complète") {
-                        if($heureActuelle >= "14:00:00" && $heureActuelle <= "23:59:59") {
-                            $context
-                                ->buildViolation('Vous ne pouvez pas commander de billet journée une fois 14h00 passées.')
-                                ->atPath('typeBillet')
-                                ->addViolation()
-                            ;
+                        $typeBillet = $data->getTypeBillet();
+
+                        if($dateSelectionne === $dateJour && $typeBillet === "Journée complète") {
+                            if($heureActuelle >= "14:00:00" && $heureActuelle <= "23:59:59") {
+                                $context
+                                    ->buildViolation('Vous ne pouvez pas commander de billet journée une fois 14h00 passées.')
+                                    ->atPath('typeBillet')
+                                    ->addViolation();
+                            }
                         }
                     }
                 }])

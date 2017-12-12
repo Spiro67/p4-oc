@@ -10,9 +10,21 @@
 
     {{ parent() }}
 
-    <div class="container-fluid">
-        <div id="commande" class="">
+    <div class="container-fluid ">
+
+        <div id="commande">
+            <h3>Commande</h3>
             {% for flashMessage in app.session.flashbag.get('nbr-billet') %}
+                <div class="alert alert-danger">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            {% for flashMessage in app.session.flashbag.get('success') %}
+                <div class="alert alert-success">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            {% for flashMessage in app.session.flashbag.get('danger') %}
                 <div class="alert alert-danger">
                     {{ flashMessage }}
                 </div>
@@ -60,12 +72,15 @@
                         }}) }}
                         {{ form_errors(commandeForm.email) }}
                     </div>
+
                 </div>
-                <input class="btn btn-primary" id = "next" type ="submit" value="Suivant"/></input>
+                <div><input class="btn btn-primary" id = "next" type ="submit" value="Suivant"/></div>
+                <div id ="renvoie"><a href="{{ path('renvoie') }}">Commande perdue ?</a></div>
 
                 {{ form_end(commandeForm) }}
             </div>
         </div>
+
     </div>
 {% endblock %}
 

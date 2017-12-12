@@ -12,10 +12,9 @@
 
     {{ parent() }}
 
-    <h2 class="text-center">{{ block('title') }}</h2>
-
 <div class="container-fluid">
     <div id="commande" class="">
+            <h3>{{ block('title') }}</h3>
         <div class="well">
             <div class="tab-content">
                 <div class="table-striped">
@@ -58,7 +57,7 @@
                     data-amount="{{ commande.prixCommande * 100}}"
                     data-email="{{ commande.email }}"
                     data-name="Paiement"
-                    data-description="Billeterie du louvre"
+                    data-description="Billetterie du louvre"
                     data-locale="auto"
                     data-currency="eur">
             </script>

@@ -10,9 +10,23 @@ namespace AppBundle\Service;
 
 use Stripe\Charge;
 use Stripe\Error\Card;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Form\FormFactory;
+use Doctrine\ORM\EntityManager;
 
 class Stripe
 {
+
+    protected $session;
+
+    protected $doctrine;
+
+    protected $form;
+
+    protected $mail;
+
     /** @var string */
     private $apiKey;
 
@@ -27,10 +41,56 @@ class Stripe
      */
     public function __construct(
         $apiKey,
-        $apiToken
+        $apiToken,
+        EntityManager $doctrine,
+        Session $session,
+        FormFactory $form,
+        EnvoieMail $mail
     ) {
         $this->apiKey = $apiKey;
         $this->apiToken = $apiToken;
+        $this->session = $session;
+        $this->form = $form;
+        $this->doctrine = $doctrine;
+        $this->mail = $mail;
+    }
+
+    public function paiement(Request $request)
+    {
+        $commande = ($request->getSession()->get('command'));
+        $info = $request->getSession()->get('info');
+        $prixCommande = $commande->getPrixCommande();
+
+        if ($request->isMethod('POST')) {
+            $token = $request->get('stripeToken');
+            try {
+                $this->setCard(
+                    $this->getApiKey(),
+                    $token,
+                    $prixCommande
+                );
+
+                $quantite = $commande->getQuantite();
+                $commande->setNumeroCommande(uniqid('LV',false ));
+                $this->doctrine->persist($commande);
+
+                for ($i = 0; $i < $quantite; $i++) {
+
+                    $this->doctrine->persist($info[$i]);
+                }
+
+                $this->doctrine->flush();
+                $this->mail->sendMail($request);
+                $response = new RedirectResponse('step-4');
+                $response->send();
+
+            } catch(\Stripe\Error\Card $e) {
+
+                $response = new RedirectResponse('step-3');
+                $response->send();
+            }
+        }
+        return array ($commande, $info);
     }
 
     public function setCard($api, $token, $prixCommande)
