@@ -1,4 +1,7 @@
 services:
+    AppBundle\DataFixtures\ORM\AppFixtures:
+        tags: [doctrine.fixture.orm]
+
     app.prix:
         class: AppBundle\Service\CalculPrix
         arguments:

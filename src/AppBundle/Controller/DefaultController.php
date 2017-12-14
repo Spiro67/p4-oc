@@ -27,17 +27,16 @@ class DefaultController extends Controller
         $commandeForm = $this->createForm(CommandeType::class,$commande);
         $commandeForm->handleRequest($request);
 
-
         if ($commandeForm->isSubmitted() && $commandeForm->isValid()) {
             $data = $commandeForm->getData();
             $request->getSession()->set('command', $data);
             $dateEntree = ($request->getSession()->get('command')->getDateEntree());
 
-
-            if ($this->getNbrBilletJour($dateEntree) + $commande->getQuantite() > 1000) {
+            if (($this->getNbrBilletJour($dateEntree) + $commande->getQuantite()) > 1000) {
 
                 $this->addFlash("nbr-billet", "Déjà plus de 1000 billets vendu pour cette date ! Merci de selectionner une autre date d'entrée");
                 return $this->redirectToRoute('homepage');
+
             }
             return $this->redirectToRoute('step2');
         }
@@ -52,7 +51,9 @@ class DefaultController extends Controller
     public function step2Action(Request $request)
     {
         $commande = $request->getSession()->get('command');
-        if ($commande !== null) {
+        $dateEntree = ($request->getSession()->get('command')->getDateEntree());
+
+        if ($commande !== null && (($this->getNbrBilletJour($dateEntree) + $commande->getQuantite()) <= 1000)) {
             $quantite = $request->getSession()->get('command')->getQuantite();
 
             for ($i = 1 ; $i <= $quantite ; $i++) {

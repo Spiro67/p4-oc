@@ -6,17 +6,18 @@
  * Time: 15:34
  */
 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\info;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+class AppFixtures implements FixtureInterface
+
 {
     public function load(ObjectManager $manager)
     {
-        // create 20 products! Bam!
+
         for ($i = 0; $i < 20; $i++) {
             $info = new info();
             $info->setDateNaissance(new \DateTime("01/01/1950"));
